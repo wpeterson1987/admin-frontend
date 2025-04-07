@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getUser, createUser, updateUser } from '../../utils/api';
+import ChangePasswordForm from './ChangePasswordForm';
 
 const UserForm = () => {
   const { id } = useParams();
@@ -14,6 +15,8 @@ const UserForm = () => {
     password: '', // Only used for new users
     role: 'user'
   });
+
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
   
   const [loading, setLoading] = useState(!isNewUser);
   const [error, setError] = useState('');
@@ -156,5 +159,23 @@ const UserForm = () => {
     </div>
   );
 };
+<button
+  type="button"
+  onClick={() => setShowPasswordForm(true)}
+  className="btn btn-secondary mr-2"
+>
+  Change Password
+</button>
+
+{showPasswordForm && (
+    <ChangePasswordForm
+      userId={user.id}
+      onSuccess={() => {
+        setShowPasswordForm(false);
+        // Maybe add some success notification
+      }}
+      onCancel={() => setShowPasswordForm(false)}
+    />
+  )}
 
 export default UserForm;
