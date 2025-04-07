@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getUsers, deleteUser } from '../../utils/api';
+import './UserList.css'; // Make sure this CSS file exists
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -51,65 +52,85 @@ const UserList = () => {
   }
   
   return (
-    <div className="user-list">
-      <div className="header">
+    <div className="user-list-container">
+      <div className="page-header">
         <h1>User Management</h1>
-        <Link to="/users/new" className="btn btn-primary">Add New User</Link>
+        <Link to="/users/new" className="btn btn-primary">
+          <i className="fas fa-plus"></i> Add New User
+        </Link>
       </div>
       
-      {error && <div className="error-message">{error}</div>}
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
       
-      {users.length === 0 ? (
-        <div className="no-data">No users found.</div>
+      {users.length === 0 && !loading ? (
+        <div className="alert alert-info">No users found.</div>
       ) : (
-        <table className="user-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map(user => (
-              <tr key={user.id}>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.role}</td>
-                <td className="actions">
-                  <Link to={`/users/${user.id}`} className="btn btn-sm btn-info">Edit</Link>
-                  {user.id !== 1 && ( // Prevent deleting admin user
-                    <button 
-                      onClick={() => handleDeleteClick(user.id)} 
-                      className="btn btn-sm btn-danger"
-                    >
-                      Delete
-                    </button>
-                  )}
-                  
-                  {deleteConfirm === user.id && (
-                    <div className="delete-confirm">
-                      <p>Are you sure?</p>
-                      <button 
-                        onClick={() => handleDeleteConfirm(user.id)}
-                        className="btn btn-sm btn-danger"
-                      >
-                        Yes
-                      </button>
-                      <button 
-                        onClick={handleDeleteCancel}
-                        className="btn btn-sm btn-secondary"
-                      >
-                        No
-                      </button>
-                    </div>
-                  )}
-                </td>
+        <div className="table-responsive">
+          <table className="table table-striped table-hover">
+            <thead className="thead-dark">
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map(user => (
+                <tr key={user.id}>
+                  <td>{user.name}</td>
+                  <td>{user.email}</td>
+                  <td>
+                    <span className={`badge ${user.role === 'admin' ? 'badge-danger' : 'badge-primary'}`}>
+                      {user.role}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="btn-group" role="group">
+                      <Link to={`/users/${user.id}`} className="btn btn-sm btn-info">
+                        <i className="fas fa-edit"></i> Edit
+                      </Link>
+                      {user.id !== 1 && (
+                        <button 
+                          onClick={() => handleDeleteClick(user.id)} 
+                          className="btn btn-sm btn-danger"
+                        >
+                          <i className="fas fa-trash"></i> Delete
+                        </button>
+                      )}
+                    </div>
+                    
+                    {deleteConfirm === user.id && (
+                      <div className="delete-confirm mt-2">
+                        <div className="alert alert-warning">
+                          <p>Are you sure you want to delete this user?</p>
+                          <div className="btn-group">
+                            <button 
+                              onClick={() => handleDeleteConfirm(user.id)}
+                              className="btn btn-sm btn-danger"
+                            >
+                              <i className="fas fa-check"></i> Yes, Delete
+                            </button>
+                            <button 
+                              onClick={handleDeleteCancel}
+                              className="btn btn-sm btn-secondary"
+                            >
+                              <i className="fas fa-times"></i> Cancel
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
