@@ -147,6 +147,17 @@ const UserForm = () => {
         
         <div className="form-actions">
           <Link to="/users" className="btn btn-secondary">Cancel</Link>
+          
+          {!isNewUser && (
+            <button
+              type="button"
+              onClick={() => setShowPasswordForm(true)}
+              className="btn btn-secondary mr-2"
+            >
+              Change Password
+            </button>
+          )}
+          
           <button 
             type="submit" 
             className="btn btn-primary"
@@ -156,26 +167,19 @@ const UserForm = () => {
           </button>
         </div>
       </form>
+      
+      {!isNewUser && showPasswordForm && (
+        <ChangePasswordForm
+          userId={id}
+          onSuccess={() => {
+            setShowPasswordForm(false);
+            setError('');
+          }}
+          onCancel={() => setShowPasswordForm(false)}
+        />
+      )}
     </div>
   );
 };
-<button
-  type="button"
-  onClick={() => setShowPasswordForm(true)}
-  className="btn btn-secondary mr-2"
->
-  Change Password
-</button>
-
-{showPasswordForm && (
-    <ChangePasswordForm
-      userId={user.id}
-      onSuccess={() => {
-        setShowPasswordForm(false);
-        // Maybe add some success notification
-      }}
-      onCancel={() => setShowPasswordForm(false)}
-    />
-  )}
 
 export default UserForm;
