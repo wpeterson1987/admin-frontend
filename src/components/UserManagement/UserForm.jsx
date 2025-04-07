@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getUser, createUser, updateUser } from '../../utils/api';
 import ChangePasswordForm from './ChangePasswordForm';
-import './UserForm.css'; // Add this CSS file if needed
+import UserFamilyManagement from './UserFamilyManagement';
+import './UserForm.css';
 
 const UserForm = () => {
   const { id } = useParams();
@@ -18,6 +19,7 @@ const UserForm = () => {
   });
 
   const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [showFamilySection, setShowFamilySection] = useState(false);
   
   const [loading, setLoading] = useState(!isNewUser);
   const [error, setError] = useState('');
@@ -203,13 +205,23 @@ const UserForm = () => {
               <Link to="/users" className="btn btn-secondary">Cancel</Link>
               
               {!isNewUser && (
-                <button
-                  type="button"
-                  onClick={() => setShowPasswordForm(true)}
-                  className="btn btn-warning mx-2"
-                >
-                  <i className="fas fa-key"></i> Change Password
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordForm(true)}
+                    className="btn btn-warning mx-2"
+                  >
+                    <i className="fas fa-key"></i> Change Password
+                  </button>
+                  
+                  <button
+                    type="button"
+                    onClick={() => setShowFamilySection(!showFamilySection)}
+                    className="btn btn-info mx-2"
+                  >
+                    <i className="fas fa-users"></i> {showFamilySection ? 'Hide Family Management' : 'Manage Family Connections'}
+                  </button>
+                </>
               )}
               
               <button 
@@ -243,6 +255,12 @@ const UserForm = () => {
             }}
             onCancel={() => setShowPasswordForm(false)}
           />
+        </div>
+      )}
+      
+      {!isNewUser && showFamilySection && (
+        <div className="mt-4">
+          <UserFamilyManagement userId={id} />
         </div>
       )}
     </div>
