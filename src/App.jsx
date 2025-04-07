@@ -5,6 +5,9 @@ import Dashboard from './components/Dashboard/Dashboard';
 import NetworkList from './components/AffiliateManagement/NetworkList';
 import { isAuthenticated } from './utils/auth';
 import './App.css';
+import UsersList from './components/UserManagement/UsersList';
+import UserForm from './components/UserManagement/UserForm';
+import PasswordForm from './components/UserManagement/PasswordForm';
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -29,6 +32,31 @@ function App() {
         <Route path="/networks" element={
           <ProtectedRoute>
             <NetworkList />
+          </ProtectedRoute>
+        } />
+
+        {/* User Management Routes */}
+        <Route path="/users" element={
+          <ProtectedRoute>
+            <UsersList />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/users/:id/edit" element={
+          <ProtectedRoute>
+            <UserForm />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/users/new" element={
+          <ProtectedRoute>
+            <UserForm />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/users/:id/password" element={
+          <ProtectedRoute>
+            <PasswordForm />
           </ProtectedRoute>
         } />
         

@@ -57,6 +57,14 @@ const LoginPage = () => {
             required
           />
         </div>
+
+        <div className="card">
+            <h2>User Management</h2>
+            <p>Manage admin and regular users</p>
+            <Link to="/users" className="btn btn-primary">
+            Manage Users
+            </Link>
+        </div>
         
         <div style={{ marginBottom: '15px' }}>
           <label style={{ display: 'block', marginBottom: '5px' }}>Password:</label>
@@ -87,6 +95,7 @@ const LoginPage = () => {
         </button>
       </form>
     </div>
+    
   );
 };
 
