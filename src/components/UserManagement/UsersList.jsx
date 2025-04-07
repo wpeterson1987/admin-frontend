@@ -30,8 +30,8 @@ const UserList = () => {
   };
   
   const handleEditUser = (userId) => {
-    // Use direct window location navigation instead of React Router
-    window.location.href = `/users/${userId}`;
+    // Navigate to the correct path that matches your route definition
+    navigate(`/users/${userId}/edit`);
   };
   
   const handleDeleteClick = (userId) => {
@@ -111,7 +111,6 @@ const UserList = () => {
                   </td>
                   <td>
                     <div className="btn-group" role="group">
-                      {/* Using direct window.location navigation */}
                       <button 
                         onClick={() => handleEditUser(user.id)} 
                         className="btn btn-sm btn-info"
