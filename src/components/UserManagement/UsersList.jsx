@@ -29,6 +29,11 @@ const UserList = () => {
     }
   };
   
+  const handleEditUser = (userId) => {
+    // Explicitly navigate to the user edit page
+    navigate(`/users/${userId}`);
+  };
+  
   const handleDeleteClick = (userId) => {
     setDeleteConfirm(userId);
   };
@@ -108,9 +113,14 @@ const UserList = () => {
                   </td>
                   <td>
                     <div className="btn-group" role="group">
-                      <Link to={`/users/${user.id}`} className="btn btn-sm btn-info">
+                      {/* Replace Link with button that uses navigate */}
+                      <button 
+                        onClick={() => handleEditUser(user.id)} 
+                        className="btn btn-sm btn-info"
+                      >
                         <i className="fas fa-edit"></i> Edit
-                      </Link>
+                      </button>
+                      
                       {user.id !== 1 && (
                         <button 
                           onClick={() => handleDeleteClick(user.id)} 
