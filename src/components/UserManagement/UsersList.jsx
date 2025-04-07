@@ -30,8 +30,8 @@ const UserList = () => {
   };
   
   const handleEditUser = (userId) => {
-    // Explicitly navigate to the user edit page
-    navigate(`/users/${userId}`);
+    // Use direct window location navigation instead of React Router
+    window.location.href = `/users/${userId}`;
   };
   
   const handleDeleteClick = (userId) => {
@@ -54,9 +54,7 @@ const UserList = () => {
   };
   
   const handleLogout = () => {
-    // Clear auth token from localStorage
     localStorage.removeItem('token');
-    // Redirect to login page
     navigate('/login');
   };
   
@@ -113,7 +111,7 @@ const UserList = () => {
                   </td>
                   <td>
                     <div className="btn-group" role="group">
-                      {/* Replace Link with button that uses navigate */}
+                      {/* Using direct window.location navigation */}
                       <button 
                         onClick={() => handleEditUser(user.id)} 
                         className="btn btn-sm btn-info"
