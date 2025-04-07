@@ -1,14 +1,15 @@
 // src/components/UserManagement/UserList.jsx
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getUsers, deleteUser } from '../../utils/api';
-import './UserList.css'; // Make sure this CSS file exists
+import './UserList.css';
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const navigate = useNavigate();
   
   useEffect(() => {
     fetchUsers();
@@ -47,12 +48,28 @@ const UserList = () => {
     setDeleteConfirm(null);
   };
   
+  const handleLogout = () => {
+    // Clear auth token from localStorage
+    localStorage.removeItem('token');
+    // Redirect to login page
+    navigate('/login');
+  };
+  
   if (loading && users.length === 0) {
     return <div className="loading">Loading users...</div>;
   }
   
   return (
     <div className="user-list-container">
+      <div className="navbar">
+        <Link to="/" className="btn btn-secondary">
+          <i className="fas fa-arrow-left"></i> Back to Dashboard
+        </Link>
+        <button onClick={handleLogout} className="btn btn-outline-danger">
+          <i className="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+      
       <div className="page-header">
         <h1>User Management</h1>
         <Link to="/users/new" className="btn btn-primary">

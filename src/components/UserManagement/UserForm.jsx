@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { getUser, createUser, updateUser } from '../../utils/api';
 import ChangePasswordForm from './ChangePasswordForm';
+import './UserForm.css'; // Add this CSS file if needed
 
 const UserForm = () => {
   const { id } = useParams();
@@ -94,6 +95,8 @@ const UserForm = () => {
         const { password, ...updateData } = formData;
         await updateUser(id, updateData);
         setSuccess('User updated successfully!');
+        
+        // No auto-redirect on update, let user see the success message
       }
     } catch (err) {
       console.error('Error saving user:', err);
@@ -103,108 +106,144 @@ const UserForm = () => {
     }
   };
   
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+  
   if (loading) {
     return <div className="loading">Loading user details...</div>;
   }
   
   return (
-    <div className="user-form">
-      <div className="header">
-        <h1>{isNewUser ? 'Add New User' : 'Edit User'}</h1>
-        <Link to="/users" className="btn btn-secondary">Back to Users</Link>
-      </div>
-      
-      {error && <div className="error-message">{error}</div>}
-      {success && <div className="success-message">{success}</div>}
-      
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        
-        {isNewUser && (
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required={isNewUser}
-              minLength={6}
-            />
-            <small className="form-text">Password must be at least 6 characters.</small>
-          </div>
-        )}
-        
-        <div className="form-group">
-          <label htmlFor="role">Role</label>
-          <select
-            id="role"
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            required
-          >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
-        
-        <div className="form-actions">
-          <Link to="/users" className="btn btn-secondary">Cancel</Link>
-          
-          {!isNewUser && (
-            <button
-              type="button"
-              onClick={() => setShowPasswordForm(true)}
-              className="btn btn-secondary mr-2"
-            >
-              Change Password
-            </button>
-          )}
-          
-          <button 
-            type="submit" 
-            className="btn btn-primary"
-            disabled={saving}
-          >
-            {saving ? 'Saving...' : 'Save User'}
+    <div className="user-form-container">
+      <div className="navbar">
+        <Link to="/" className="btn btn-secondary">
+          <i className="fas fa-arrow-left"></i> Back to Dashboard
+        </Link>
+        <div>
+          <Link to="/users" className="btn btn-outline-primary mr-2">
+            <i className="fas fa-users"></i> User List
+          </Link>
+          <button onClick={handleLogout} className="btn btn-outline-danger">
+            <i className="fas fa-sign-out-alt"></i> Logout
           </button>
         </div>
-      </form>
+      </div>
+      
+      <div className="page-header">
+        <h1>{isNewUser ? 'Add New User' : 'Edit User'}</h1>
+      </div>
+      
+      {error && <div className="alert alert-danger">{error}</div>}
+      {success && <div className="alert alert-success">{success}</div>}
+      
+      <div className="card">
+        <div className="card-body">
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="name">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                className="form-control"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                className="form-control"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
+            {isNewUser && (
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  className="form-control"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required={isNewUser}
+                  minLength={6}
+                />
+                <small className="form-text text-muted">Password must be at least 6 characters.</small>
+              </div>
+            )}
+            
+            <div className="form-group">
+              <label htmlFor="role">Role</label>
+              <select
+                id="role"
+                name="role"
+                className="form-control"
+                value={formData.role}
+                onChange={handleChange}
+                required
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            
+            <div className="form-actions">
+              <Link to="/users" className="btn btn-secondary">Cancel</Link>
+              
+              {!isNewUser && (
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordForm(true)}
+                  className="btn btn-warning mx-2"
+                >
+                  <i className="fas fa-key"></i> Change Password
+                </button>
+              )}
+              
+              <button 
+                type="submit" 
+                className="btn btn-primary"
+                disabled={saving}
+              >
+                {saving ? (
+                  <>
+                    <i className="fas fa-spinner fa-spin"></i> Saving...
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-save"></i> Save User
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
       
       {!isNewUser && showPasswordForm && (
-        <ChangePasswordForm
-          userId={id}
-          onSuccess={() => {
-            setShowPasswordForm(false);
-            setError('');
-            setSuccess('Password updated successfully!');
-          }}
-          onCancel={() => setShowPasswordForm(false)}
-        />
+        <div className="mt-4">
+          <ChangePasswordForm
+            userId={id}
+            onSuccess={() => {
+              setShowPasswordForm(false);
+              setError('');
+              setSuccess('Password updated successfully!');
+            }}
+            onCancel={() => setShowPasswordForm(false)}
+          />
+        </div>
       )}
     </div>
   );

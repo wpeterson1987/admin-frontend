@@ -6,6 +6,15 @@
     margin: 0 auto;
   }
   
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+  }
+  
   .page-header {
     display: flex;
     justify-content: space-between;
@@ -111,6 +120,7 @@
     border-radius: 0.25rem;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
     cursor: pointer;
+    text-decoration: none;
   }
   
   .btn-primary {
@@ -155,6 +165,18 @@
   .btn-secondary:hover {
     background-color: #5a6268;
     border-color: #545b62;
+  }
+  
+  .btn-outline-danger {
+    color: #dc3545;
+    background-color: transparent;
+    border-color: #dc3545;
+  }
+  
+  .btn-outline-danger:hover {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
   }
   
   .btn-sm {
