@@ -7,7 +7,7 @@ import ChangePasswordForm from './ChangePasswordForm';
 const UserForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const isNewUser = id === 'new';
+  const isNewUser = !id || id === 'new';
   
   const [formData, setFormData] = useState({
     name: '',
@@ -21,19 +21,32 @@ const UserForm = () => {
   const [loading, setLoading] = useState(!isNewUser);
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState('');
   
   useEffect(() => {
     const fetchUser = async () => {
-      if (isNewUser) return;
+      if (isNewUser) {
+        // Reset form for new user
+        setFormData({
+          name: '',
+          email: '',
+          password: '',
+          role: 'user'
+        });
+        setLoading(false);
+        return;
+      }
       
       try {
         const data = await getUser(id);
-        setFormData({
-          name: data.user.name,
-          email: data.user.email,
-          password: '', // Password is not returned from API
-          role: data.user.role
-        });
+        if (data && data.user) {
+          setFormData({
+            name: data.user.name || '',
+            email: data.user.email || '',
+            password: '', // Password is not returned from API
+            role: data.user.role || 'user'
+          });
+        }
         setError('');
       } catch (err) {
         console.error('Error fetching user:', err);
@@ -57,20 +70,35 @@ const UserForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
+    setError('');
+    setSuccess('');
     
     try {
       if (isNewUser) {
+        // Ensure password is provided for new users
+        if (!formData.password || formData.password.length < 6) {
+          setError('Password must be at least 6 characters long');
+          setSaving(false);
+          return;
+        }
+        
         await createUser(formData);
+        setSuccess('User created successfully!');
+        
+        // Clear form for another add or redirect
+        setTimeout(() => {
+          navigate('/users');
+        }, 1500);
       } else {
         // Don't send password in update (empty string)
         const { password, ...updateData } = formData;
         await updateUser(id, updateData);
+        setSuccess('User updated successfully!');
       }
-      
-      navigate('/users');
     } catch (err) {
       console.error('Error saving user:', err);
       setError('Failed to save user. ' + (err.response?.data?.message || ''));
+    } finally {
       setSaving(false);
     }
   };
@@ -87,6 +115,7 @@ const UserForm = () => {
       </div>
       
       {error && <div className="error-message">{error}</div>}
+      {success && <div className="success-message">{success}</div>}
       
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -125,9 +154,7 @@ const UserForm = () => {
               required={isNewUser}
               minLength={6}
             />
-            {isNewUser && (
-              <small className="form-text">Password must be at least 6 characters.</small>
-            )}
+            <small className="form-text">Password must be at least 6 characters.</small>
           </div>
         )}
         
@@ -174,6 +201,7 @@ const UserForm = () => {
           onSuccess={() => {
             setShowPasswordForm(false);
             setError('');
+            setSuccess('Password updated successfully!');
           }}
           onCancel={() => setShowPasswordForm(false)}
         />
