@@ -70,6 +70,12 @@ const SystemSettings = () => {
     setError('');
     
     try {
+      console.log('Submitting settings:', {
+        autoBackup: settings.autoBackup,
+        backupFrequency: settings.backupFrequency,
+        backupRetention: settings.backupRetention
+      });
+      
       // Update backup settings
       const response = await axios.put('/api/backup/settings', {
         autoBackup: settings.autoBackup,
@@ -77,13 +83,32 @@ const SystemSettings = () => {
         backupRetention: settings.backupRetention
       });
       
+      console.log('API response:', response);
+      
       if (response.data.success) {
         setSuccess('Settings saved successfully');
       } else {
-        setError('Failed to save settings');
+        setError(`Failed to save settings: ${response.data.message || 'Unknown error'}`);
       }
     } catch (err) {
-      setError(`Error saving settings: ${err.response?.data?.message || err.message}`);
+      console.error('Full error object:', err);
+      
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Error data:', err.response.data);
+        console.error('Error status:', err.response.status);
+        console.error('Error headers:', err.response.headers);
+        setError(`Error: ${err.response.data.message || err.response.statusText || err.message}`);
+      } else if (err.request) {
+        // The request was made but no response was received
+        console.error('Error request:', err.request);
+        setError('Error: No response received from server. Network issue or server unreachable.');
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error message:', err.message);
+        setError(`Error: ${err.message}`);
+      }
     } finally {
       setLoading(false);
     }
@@ -96,7 +121,11 @@ const SystemSettings = () => {
     setError('');
     
     try {
+      console.log('Creating manual backup...');
+      
       const response = await axios.post('/api/backup/create');
+      
+      console.log('API response:', response);
       
       if (response.data.success) {
         setSuccess('Backup completed successfully');
@@ -108,15 +137,31 @@ const SystemSettings = () => {
         });
         
         // Refresh backup history
-        const historyResponse = await axios.get('/api/backup/history');
-        if (historyResponse.data.success) {
-          setBackups(historyResponse.data.backups);
+        try {
+          const historyResponse = await axios.get('/api/backup/history');
+          if (historyResponse.data.success) {
+            setBackups(historyResponse.data.backups);
+          }
+        } catch (histErr) {
+          console.error('Error refreshing history:', histErr);
         }
       } else {
-        setError('Failed to create backup');
+        setError(`Failed to create backup: ${response.data.message || 'Unknown error'}`);
       }
     } catch (err) {
-      setError(`Error creating backup: ${err.response?.data?.message || err.message}`);
+      console.error('Full error object:', err);
+      
+      if (err.response) {
+        console.error('Error data:', err.response.data);
+        console.error('Error status:', err.response.status);
+        setError(`Error: ${err.response.data.message || err.response.statusText || err.message}`);
+      } else if (err.request) {
+        console.error('Error request:', err.request);
+        setError('Error: No response received from server. Network issue or server unreachable.');
+      } else {
+        console.error('Error message:', err.message);
+        setError(`Error: ${err.message}`);
+      }
     } finally {
       setBackupLoading(false);
     }
