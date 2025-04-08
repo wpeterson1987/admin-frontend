@@ -4,6 +4,18 @@ import { Container, Row, Col, Card, Button, Form, Alert, Spinner, Tabs, Tab } fr
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 axios.defaults.baseURL = 'https://tasks.valortek.com';
+axios.interceptors.request.use(
+    config => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
 
 const SystemSettings = () => {
   const [loading, setLoading] = useState(false);
