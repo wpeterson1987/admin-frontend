@@ -7,17 +7,17 @@ import AdminLayout from './layout/AdminLayout';
 // Import page components
 import Dashboard from './components/Dashboard/Dashboard';
 import LoginPage from './components/Auth/LoginPage';
-import UserList from './pages/UserList';
-import UserForm from './pages/UserForm';
-import FamilyList from './pages/FamilyList';
+import UserList from './UserManagement/UserList';
+import UserForm from './UserManagement/UserForm';
+import FamilyList from './UserManagement/UserFamilyManagement';
 import FamilyDetails from './pages/FamilyDetails';
 
 // Import affiliate marketing components
-import AffiliateMarketingDashboard from './components/affiliate/AffiliateMarketingDashboard';
-import AffiliateLinksTable from './components/affiliate/AffiliateLinksTable';
-import AffiliateNetworksTable from './components/affiliate/AffiliateNetworksTable';
-import AffiliateLinkForm from './components/affiliate/AffiliateLinkForm';
-import AffiliateLinkStats from './components/affiliate/AffiliateLinkStats';
+import AffiliateMarketingDashboard from './components/AffiliateManagement/AffiliateMarketingDashboard';
+import AffiliateLinksTable from './components/AffiliateManagement/AffiliateLinksTable';
+import AffiliateNetworksTable from './components/AffiliateManagement/AffiliateNetworksTable';
+import AffiliateLinkForm from './components/AffiliateManagement/AffiliateLinkForm';
+import AffiliateLinkStats from './components/AffiliateManagement/AffiliateLinkStats';
 
 // Auth guard component
 const ProtectedRoute = ({ children }) => {
