@@ -5,12 +5,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import AdminLayout from './layout/AdminLayout';
 
 // Import page components
-import Dashboard from './pages/Dashboard';
-import LoginPage from './pages/LoginPage';
-import UserList from './pages/UserList';
-import UserForm from './pages/UserForm';
-import FamilyList from './pages/FamilyList';
-import FamilyDetails from './pages/FamilyDetails';
+import Dashboard from './Dashboard/Dashboard';
+import LoginPage from './Auth/LoginPage';
+import UserList from './UserManagement/UserList';
+import UserForm from './UserMAnagement/UserForm';
+import FamiliesLanding from './FamilyManagement/FamiliesLanding';
 
 // Import affiliate marketing components
 import AffiliateMarketingDashboard from './components/AffiliateManagement/AffiliateMarketingDashboard';
