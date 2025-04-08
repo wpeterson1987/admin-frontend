@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Import layout components
-import AdminLayout from './layout/AdminLayout';
+// import AdminLayout from './layout/AdminLayout';
 
 // Import page components
 import Dashboard from './Dashboard/Dashboard';

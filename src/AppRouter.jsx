@@ -40,12 +40,7 @@ const AppRouter = () => {
         
         {/* Protected routes with admin layout */}
         <Route 
-          path="/" 
-          element={
-            <ProtectedRoute>
-              <AdminLayout />
-            </ProtectedRoute>
-          }
+          
         >
           {/* Dashboard */}
           <Route index element={<Dashboard />} />
