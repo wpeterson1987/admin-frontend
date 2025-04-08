@@ -9,7 +9,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import LoginPage from './components/Auth/LoginPage';
 import UserList from './components/UserManagement/UserList';
 import UserForm from './components/UserMAnagement/UserForm';
-import FamiliesLanding from './FamilyManagement/FamiliesLanding';
+import FamiliesLanding from './components/FamilyManagement/FamiliesLanding';
 
 // Import affiliate marketing components
 import AffiliateMarketingDashboard from './components/AffiliateManagement/AffiliateMarketingDashboard';
