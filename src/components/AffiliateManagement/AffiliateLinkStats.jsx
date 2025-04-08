@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 // Import page components
 import Dashboard from '../Dashboard/Dashboard';
 import LoginPage from '../Auth/LoginPage';
-import UserList from '../UserManagement/UserList';
+import UserList from '../UserManagement/UsersList';
 import UserForm from '../UserManagement/UserForm';
 import FamiliesLanding from '../FamilyManagement/FamiliesLanding';
 
