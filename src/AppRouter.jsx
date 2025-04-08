@@ -56,9 +56,9 @@ const AppRouter = () => {
           <Route path="users/edit/:id" element={<UserForm />} />
           
           {/* Family Management */}
-          <Route path="families" element={<FamilyList />} />
-          <Route path="families/:id" element={<FamilyDetails />} />
           <Route path="families" element={<FamiliesLanding />} />
+          <Route path="families/:id" element={<FamilyDetails />} />
+          
           
           {/* Affiliate Marketing */}
           <Route path="affiliate" element={<AffiliateMarketingDashboard />} />
