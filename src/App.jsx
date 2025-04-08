@@ -13,6 +13,7 @@ import AffiliateMarketingDashboard from './components/AffiliateManagement/Affili
 import AffiliateNetworksTable from './components/AffiliateManagement/AffiliateNetworksTable';
 import AffiliateLinkForm from './components/AffiliateManagement/AffiliateLinkForm';
 import AffiliateLinkStats from './components/AffiliateManagement/AffiliateLinkStats';
+import SystemSettings from './components/SystemSettings/SystemSettings';
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -101,6 +102,12 @@ function App() {
 <Route path="/affiliate/links/stats/:id" element={
   <ProtectedRoute>
     <AffiliateLinkStats />
+  </ProtectedRoute>
+} />
+
+<Route path="/settings" element={
+  <ProtectedRoute>
+    <SystemSettings />
   </ProtectedRoute>
 } />
         
