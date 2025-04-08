@@ -6,7 +6,7 @@ import AdminLayout from './layout/AdminLayout';
 
 // Import page components
 import Dashboard from './pages/Dashboard';
-import LoginPage from './pages/LoginPage';
+import LoginPage from './components/Auth/LoginPage';
 import UserList from './pages/UserList';
 import UserForm from './pages/UserForm';
 import FamilyList from './pages/FamilyList';
