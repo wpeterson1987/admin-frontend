@@ -44,25 +44,85 @@ const AffiliateMarketingDashboard = () => {
   const [error, setError] = useState(null);
   
   // Fetch statistics data
+  //useEffect(() => {
+  //  const fetchStatistics = async () => {
+  //    try {
+  //      setLoading(true);
+  //      const response = await axios.get(`/api/affiliate/statistics?period=${period}`);
+  //      if (response.data.success) {
+  //        setStatistics(response.data.statistics);
+  //      } else {
+  //        setError('Failed to load statistics');
+  //      }
+  //    } catch (err) {
+  //      setError('Error fetching affiliate statistics: ' + err.message);
+  //    } finally {
+  //      setLoading(false);
+  //    }
+  //  };
+
+  //  fetchStatistics();
+
   useEffect(() => {
-    const fetchStatistics = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`/api/affiliate/statistics?period=${period}`);
-        if (response.data.success) {
-          setStatistics(response.data.statistics);
-        } else {
-          setError('Failed to load statistics');
+    // Instead, use mock data
+    setTimeout(() => {
+      const mockStatistics = {
+        period: 'month',
+        totalClicks: 1248,
+        totalConversions: 67,
+        totalCommission: 532.45,
+        totalPurchaseAmount: 7890.32,
+        conversionRate: 5.37,
+        networkStats: {
+          'amazon': {
+            conversions: 42,
+            commission: 321.75,
+            purchaseAmount: 4580.20
+          },
+          'walmart': {
+            conversions: 18,
+            commission: 156.30,
+            purchaseAmount: 2345.12
+          },
+          'target': {
+            conversions: 7,
+            commission: 54.40,
+            purchaseAmount: 965.00
+          }
+        },
+        categoryStats: {
+          'Electronics': {
+            conversions: 24,
+            commission: 256.80,
+            purchaseAmount: 3560.45
+          },
+          'Home': {
+            conversions: 18,
+            commission: 142.25,
+            purchaseAmount: 2150.30
+          },
+          'Kitchen': {
+            conversions: 15,
+            commission: 98.40,
+            purchaseAmount: 1489.57
+          },
+          'Other': {
+            conversions: 10,
+            commission: 35.00,
+            purchaseAmount: 690.00
+          }
         }
-      } catch (err) {
-        setError('Error fetching affiliate statistics: ' + err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
+      
+      setStatistics(mockStatistics);
+      setLoading(false);
+    }, 800);
+  }, [period]); // This dependency array is correct
     
-    fetchStatistics();
-  }, [period]);
+  
+  //}, [period]);
+
+  
   
   // Format currency
   const formatCurrency = (amount) => {
