@@ -1,7 +1,14 @@
 // src/components/UserManagement/UserFamilyManagement.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getUserFamilies, addUserToFamily, removeUserFromFamily, updateUserFamilyRole } from '../../utils/api';
+import { 
+  getUserFamilies, 
+  addUserToFamily, 
+  removeUserFromFamily, 
+  updateUserFamilyRole, 
+  getAvailableFamilies,
+  createFamily 
+} from '../../utils/api';
 import './UserFamilyManagement.css';
 
 const UserFamilyManagement = ({ user }) => {
@@ -14,6 +21,13 @@ const UserFamilyManagement = ({ user }) => {
   const [selectedFamily, setSelectedFamily] = useState('');
   const [roleSelection, setRoleSelection] = useState('member');
   const [isAdmin, setIsAdmin] = useState(false);
+  
+  // Create family form state
+  const [showCreateFamily, setShowCreateFamily] = useState(false);
+  const [newFamilyData, setNewFamilyData] = useState({
+    family_name: '',
+    subscription_tier: 'basic'
+  });
 
   useEffect(() => {
     fetchUserFamilies();
@@ -36,13 +50,8 @@ const UserFamilyManagement = ({ user }) => {
 
   const fetchAvailableFamilies = async () => {
     try {
-      // This would be a new API endpoint to get families the user isn't already in
-      // For now, we'll use mock data
-      setAvailableFamilies([
-        { id: 1, name: 'Smith Family' },
-        { id: 2, name: 'Johnson Family' },
-        { id: 3, name: 'Williams Family' }
-      ]);
+      const response = await getAvailableFamilies(userId);
+      setAvailableFamilies(response.available_families || []);
     } catch (err) {
       console.error('Error fetching available families:', err);
     }
@@ -66,6 +75,7 @@ const UserFamilyManagement = ({ user }) => {
       
       setSuccess('User added to family successfully');
       fetchUserFamilies(); // Refresh the list
+      fetchAvailableFamilies(); // Refresh available families
       setSelectedFamily('');
       setRoleSelection('member');
       setIsAdmin(false);
@@ -84,6 +94,7 @@ const UserFamilyManagement = ({ user }) => {
       
       setSuccess('User removed from family successfully');
       fetchUserFamilies(); // Refresh the list
+      fetchAvailableFamilies(); // Refresh available families
     } catch (err) {
       console.error('Error removing user from family:', err);
       setError('Failed to remove user from family');
@@ -105,6 +116,56 @@ const UserFamilyManagement = ({ user }) => {
     } catch (err) {
       console.error('Error updating user role:', err);
       setError('Failed to update user role');
+    }
+  };
+  
+  const handleCreateFamilyChange = (e) => {
+    const { name, value } = e.target;
+    setNewFamilyData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  
+  const handleCreateFamily = async (e) => {
+    e.preventDefault();
+    
+    if (!newFamilyData.family_name) {
+      setError('Family name is required');
+      return;
+    }
+    
+    try {
+      setError('');
+      setSuccess('');
+      
+      // Create the family
+      const response = await createFamily({
+        ...newFamilyData,
+        created_by_user_id: userId
+      });
+      
+      // Add the user to the newly created family as an admin
+      if (response && response.family && response.family.id) {
+        await addUserToFamily(response.family.id, userId, {
+          role: 'parent',
+          is_admin: true
+        });
+      }
+      
+      setSuccess('Family created successfully and user added as admin');
+      fetchUserFamilies(); // Refresh the list
+      fetchAvailableFamilies(); // Refresh available families
+      
+      // Reset form
+      setNewFamilyData({
+        family_name: '',
+        subscription_tier: 'basic'
+      });
+      setShowCreateFamily(false);
+    } catch (err) {
+      console.error('Error creating family:', err);
+      setError('Failed to create family');
     }
   };
 
@@ -175,59 +236,118 @@ const UserFamilyManagement = ({ user }) => {
             </table>
           )}
           
-          <h4 className="mt-4">Add to Family</h4>
-          <form onSubmit={handleAddToFamily} className="add-family-form">
-            <div className="form-group">
-              <label htmlFor="familySelect">Select Family</label>
-              <select 
-                id="familySelect"
-                value={selectedFamily}
-                onChange={(e) => setSelectedFamily(e.target.value)}
-                className="form-control"
-                required
+          {/* Create New Family Section */}
+          <div className="create-family-section mt-4">
+            <h4>Create New Family</h4>
+            {showCreateFamily ? (
+              <form onSubmit={handleCreateFamily} className="create-family-form">
+                <div className="form-group">
+                  <label htmlFor="family_name">Family Name</label>
+                  <input
+                    type="text"
+                    id="family_name"
+                    name="family_name"
+                    value={newFamilyData.family_name}
+                    onChange={handleCreateFamilyChange}
+                    className="form-control"
+                    required
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="subscription_tier">Subscription Tier</label>
+                  <select
+                    id="subscription_tier"
+                    name="subscription_tier"
+                    value={newFamilyData.subscription_tier}
+                    onChange={handleCreateFamilyChange}
+                    className="form-control"
+                  >
+                    <option value="basic">Basic</option>
+                    <option value="professional">Professional</option>
+                  </select>
+                </div>
+                
+                <div className="form-actions">
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateFamily(false)}
+                    className="btn btn-secondary mr-2"
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    Create Family
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <button
+                onClick={() => setShowCreateFamily(true)}
+                className="btn btn-primary"
               >
-                <option value="">-- Select Family --</option>
-                {availableFamilies.map(family => (
-                  <option key={family.id} value={family.id}>{family.name}</option>
-                ))}
-              </select>
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="roleSelect">Role</label>
-              <select 
-                id="roleSelect"
-                value={roleSelection}
-                onChange={(e) => setRoleSelection(e.target.value)}
-                className="form-control"
-              >
-                <option value="parent">Parent</option>
-                <option value="child">Child</option>
-                <option value="member">Member</option>
-              </select>
-            </div>
-            
-            <div className="form-group">
-              <div className="form-check">
-                <input 
-                  type="checkbox" 
-                  id="adminCheck"
-                  className="form-check-input" 
-                  checked={isAdmin}
-                  onChange={(e) => setIsAdmin(e.target.checked)}
-                />
-                <label className="form-check-label" htmlFor="adminCheck">
-                  Admin Privileges
-                </label>
-              </div>
-            </div>
-            
-            <div className="form-group">
-              <button type="submit" className="btn btn-primary">
-                <i className="fas fa-plus"></i> Add to Family
+                <i className="fas fa-plus"></i> Create New Family
               </button>
-            </div>
-          </form>
+            )}
+          </div>
+          
+          <h4 className="mt-4">Add to Existing Family</h4>
+          {availableFamilies.length === 0 ? (
+            <p className="text-muted">No available families to join</p>
+          ) : (
+            <form onSubmit={handleAddToFamily} className="add-family-form">
+              <div className="form-group">
+                <label htmlFor="familySelect">Select Family</label>
+                <select 
+                  id="familySelect"
+                  value={selectedFamily}
+                  onChange={(e) => setSelectedFamily(e.target.value)}
+                  className="form-control"
+                  required
+                >
+                  <option value="">-- Select Family --</option>
+                  {availableFamilies.map(family => (
+                    <option key={family.id} value={family.id}>{family.family_name}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="roleSelect">Role</label>
+                <select 
+                  id="roleSelect"
+                  value={roleSelection}
+                  onChange={(e) => setRoleSelection(e.target.value)}
+                  className="form-control"
+                >
+                  <option value="parent">Parent</option>
+                  <option value="child">Child</option>
+                  <option value="member">Member</option>
+                </select>
+              </div>
+              
+              <div className="form-group">
+                <div className="form-check">
+                  <input 
+                    type="checkbox" 
+                    id="adminCheck"
+                    className="form-check-input" 
+                    checked={isAdmin}
+                    onChange={(e) => setIsAdmin(e.target.checked)}
+                  />
+                  <label className="form-check-label" htmlFor="adminCheck">
+                    Admin Privileges
+                  </label>
+                </div>
+              </div>
+              
+              <div className="form-group">
+                <button type="submit" className="btn btn-primary">
+                  <i className="fas fa-plus"></i> Add to Family
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </div>
