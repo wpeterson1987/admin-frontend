@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Form, Alert, Spinner, Tabs, Tab } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+axios.defaults.baseURL = 'https://tasks.valortek.com';
 
 const SystemSettings = () => {
   const [loading, setLoading] = useState(false);
