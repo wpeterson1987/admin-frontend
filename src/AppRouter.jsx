@@ -11,6 +11,7 @@ import UserList from './components/UserManagement/UserList';
 import UserForm from './components/UserManagement/UserForm';
 import FamilyList from './components/UserManagement/UserFamilyManagement';
 import FamilyDetails from './pages/FamilyDetails';
+import FamiliesLanding from './components/FamilyManagement/FamiliesLanding';
 
 // Import affiliate marketing components
 import AffiliateMarketingDashboard from './components/AffiliateManagement/AffiliateMarketingDashboard';
@@ -57,6 +58,7 @@ const AppRouter = () => {
           {/* Family Management */}
           <Route path="families" element={<FamilyList />} />
           <Route path="families/:id" element={<FamilyDetails />} />
+          <Route path="families" element={<FamiliesLanding />} />
           
           {/* Affiliate Marketing */}
           <Route path="affiliate" element={<AffiliateMarketingDashboard />} />
