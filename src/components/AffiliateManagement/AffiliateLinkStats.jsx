@@ -5,10 +5,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 // import AdminLayout from './layout/AdminLayout';
 
 // Import page components
-import Dashboard from './Dashboard/Dashboard';
-import LoginPage from './Auth/LoginPage';
-import UserList from './UserManagement/UserList';
-import UserForm from './UserMAnagement/UserForm';
+import Dashboard from './components/Dashboard/Dashboard';
+import LoginPage from './components/Auth/LoginPage';
+import UserList from './components/UserManagement/UserList';
+import UserForm from './components/UserMAnagement/UserForm';
 import FamiliesLanding from './FamilyManagement/FamiliesLanding';
 
 // Import affiliate marketing components
