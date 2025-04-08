@@ -8,6 +8,11 @@ import './App.css';
 import UsersList from './components/UserManagement/UsersList';
 import UserForm from './components/UserManagement/UserForm';
 import PasswordForm from './components/UserManagement/PasswordForm';
+import FamiliesLanding from './components/FamilyManagement/FamiliesLanding';
+import AffiliateMarketingDashboard from './components/AffiliateManagement/AffiliateMarketingDashboard';
+import AffiliateNetworksTable from './components/AffiliateManagement/AffiliateNetworksTable';
+import AffiliateLinkForm from './components/AffiliateManagement/AffiliateLinkForm';
+import AffiliateLinkStats from './components/AffiliateManagement/AffiliateLinkStats';
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -59,6 +64,45 @@ function App() {
             <PasswordForm />
           </ProtectedRoute>
         } />
+
+        {/* Family Management Routes */}
+<Route path="/families" element={
+  <ProtectedRoute>
+    <FamiliesLanding />
+  </ProtectedRoute>
+} />
+
+{/* Affiliate Management Routes */}
+<Route path="/affiliate" element={
+  <ProtectedRoute>
+    <AffiliateMarketingDashboard />
+  </ProtectedRoute>
+} />
+<Route path="/affiliate/links" element={
+  <ProtectedRoute>
+    <AffiliateMarketingDashboard />
+  </ProtectedRoute>
+} />
+<Route path="/affiliate/networks" element={
+  <ProtectedRoute>
+    <AffiliateNetworksTable />
+  </ProtectedRoute>
+} />
+<Route path="/affiliate/links/new" element={
+  <ProtectedRoute>
+    <AffiliateLinkForm />
+  </ProtectedRoute>
+} />
+<Route path="/affiliate/links/edit/:id" element={
+  <ProtectedRoute>
+    <AffiliateLinkForm />
+  </ProtectedRoute>
+} />
+<Route path="/affiliate/links/stats/:id" element={
+  <ProtectedRoute>
+    <AffiliateLinkStats />
+  </ProtectedRoute>
+} />
         
         {/* Redirect any unknown routes to dashboard */}
         <Route path="*" element={<Navigate to="/" />} />
