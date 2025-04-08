@@ -7,10 +7,10 @@ import AdminLayout from './layout/AdminLayout';
 // Import page components
 import Dashboard from './components/Dashboard/Dashboard';
 import LoginPage from './components/Auth/LoginPage';
-import UserList from './components/UserManagement/UserList';
+import UserList from './components/UserManagement/UsersList';
 import UserForm from './components/UserManagement/UserForm';
-import FamilyList from './components/UserManagement/UserFamilyManagement';
-import FamilyDetails from './pages/FamilyDetails';
+// import FamilyList from './components/UserManagement/UserFamilyManagement';
+// import FamilyDetails from './pages/FamilyDetails';
 import FamiliesLanding from './components/FamilyManagement/FamiliesLanding';
 
 // Import affiliate marketing components
