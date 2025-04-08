@@ -12,11 +12,11 @@ import UserForm from '../UserManagement/UserForm';
 import FamiliesLanding from '../FamilyManagement/FamiliesLanding';
 
 // Import affiliate marketing components
-import AffiliateMarketingDashboard from './components/AffiliateManagement/AffiliateMarketingDashboard';
-import AffiliateLinksTable from './components/AffiliateManagement/AffiliateLinksTable';
-import AffiliateNetworksTable from './components/AffiliateManagement/AffiliateNetworksTable';
-import AffiliateLinkForm from './components/AffiliateManagement/AffiliateLinkForm';
-import AffiliateLinkStats from './components/AffiliateManagement/AffiliateLinkStats';
+import AffiliateMarketingDashboard from '../AffiliateManagement/AffiliateMarketingDashboard';
+import AffiliateLinksTable from '../AffiliateManagement/AffiliateLinksTable';
+import AffiliateNetworksTable from '../AffiliateManagement/AffiliateNetworksTable';
+import AffiliateLinkForm from '../AffiliateManagement/AffiliateLinkForm';
+import AffiliateLinkStats from '../AffiliateManagement/AffiliateLinkStats';
 
 // Auth guard component
 const ProtectedRoute = ({ children }) => {
