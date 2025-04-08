@@ -7,9 +7,9 @@ import AdminLayout from './layout/AdminLayout';
 // Import page components
 import Dashboard from './components/Dashboard/Dashboard';
 import LoginPage from './components/Auth/LoginPage';
-import UserList from './UserManagement/UserList';
-import UserForm from './UserManagement/UserForm';
-import FamilyList from './UserManagement/UserFamilyManagement';
+import UserList from './components/UserManagement/UserList';
+import UserForm from './components/UserManagement/UserForm';
+import FamilyList from './components/UserManagement/UserFamilyManagement';
 import FamilyDetails from './pages/FamilyDetails';
 
 // Import affiliate marketing components
