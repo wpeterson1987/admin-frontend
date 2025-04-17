@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 const Dashboard = () => {
   const [userCount, setUserCount] = useState(0);
   const [familyCount, setFamilyCount] = useState(0);
+  const [subscriptionCount, setSubscriptionCount] = useState(0);
   const [affiliateStats, setAffiliateStats] = useState({
     links: 0,
     clicks: 0,
@@ -18,6 +19,7 @@ const Dashboard = () => {
     setTimeout(() => {
       setUserCount(124);
       setFamilyCount(35);
+      setSubscriptionCount(28);
       setAffiliateStats({
         links: 87,
         clicks: 1243,
@@ -57,26 +59,32 @@ const Dashboard = () => {
       ) : (
         <>
           {/* Summary Cards */}
-          <div style={{ display: 'flex', gap: '20px', marginBottom: '30px' }}>
-            <div style={{ flex: 1, padding: '20px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+          <div style={{ display: 'flex', gap: '20px', marginBottom: '30px', flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 200px', padding: '20px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
               <h3 style={{ margin: '0 0 10px 0' }}>Users</h3>
               <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0 0 10px 0' }}>{userCount}</p>
               <p style={{ margin: '0', color: '#666' }}>Total registered users</p>
             </div>
             
-            <div style={{ flex: 1, padding: '20px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+            <div style={{ flex: '1 1 200px', padding: '20px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
               <h3 style={{ margin: '0 0 10px 0' }}>Families</h3>
               <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0 0 10px 0' }}>{familyCount}</p>
               <p style={{ margin: '0', color: '#666' }}>Active family units</p>
             </div>
             
-            <div style={{ flex: 1, padding: '20px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+            <div style={{ flex: '1 1 200px', padding: '20px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+              <h3 style={{ margin: '0 0 10px 0' }}>Subscriptions</h3>
+              <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0 0 10px 0' }}>{subscriptionCount}</p>
+              <p style={{ margin: '0', color: '#666' }}>Active subscriptions</p>
+            </div>
+            
+            <div style={{ flex: '1 1 200px', padding: '20px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
               <h3 style={{ margin: '0 0 10px 0' }}>Affiliate Links</h3>
               <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0 0 10px 0' }}>{affiliateStats.links}</p>
               <p style={{ margin: '0', color: '#666' }}>Active tracking links</p>
             </div>
             
-            <div style={{ flex: 1, padding: '20px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+            <div style={{ flex: '1 1 200px', padding: '20px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
               <h3 style={{ margin: '0 0 10px 0' }}>Affiliate Earnings</h3>
               <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0 0 10px 0' }}>${affiliateStats.earnings.toFixed(2)}</p>
               <p style={{ margin: '0', color: '#666' }}>Total commission earned</p>
@@ -130,7 +138,7 @@ const Dashboard = () => {
             }}>
               <h2 style={{ margin: '0 0 15px 0' }}>Family Management</h2>
               <p style={{ margin: '0 0 20px 0', color: '#666', flex: 1 }}>
-                Manage family units, membership, subscription tiers and family settings.
+                Manage family units, membership, and family settings.
               </p>
               <Link 
                 to="/families" 
@@ -146,6 +154,38 @@ const Dashboard = () => {
                 }}
               >
                 Manage Families
+              </Link>
+            </div>
+            
+            {/* Subscription Management Card */}
+            <div style={{ 
+              flex: '1 1 300px', 
+              padding: '20px', 
+              backgroundColor: '#fff', 
+              borderRadius: '8px', 
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              minHeight: '200px',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <h2 style={{ margin: '0 0 15px 0' }}>Subscription Management</h2>
+              <p style={{ margin: '0 0 20px 0', color: '#666', flex: 1 }}>
+                Manage subscription plans, tiers, and payment processing. Test webhook integrations.
+              </p>
+              <Link 
+                to="/subscriptions" 
+                style={{ 
+                  display: 'inline-block',
+                  padding: '10px 15px',
+                  backgroundColor: '#03A9F4',
+                  color: 'white',
+                  textDecoration: 'none',
+                  borderRadius: '4px',
+                  textAlign: 'center',
+                  fontWeight: 'bold'
+                }}
+              >
+                Manage Subscriptions
               </Link>
             </div>
             

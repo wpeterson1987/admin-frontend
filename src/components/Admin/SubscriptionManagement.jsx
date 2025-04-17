@@ -13,7 +13,8 @@ import {
   Row,
   Col,
   Tabs,
-  Tab
+  Tab,
+  ListGroup
 } from 'react-bootstrap';
 import axios from 'axios';
 
@@ -22,11 +23,20 @@ const SubscriptionManagement = () => {
   const [subscriptions, setSubscriptions] = useState([]);
   const [tiers, setTiers] = useState([]);
   const [payments, setPayments] = useState([]);
+  const [families, setFamilies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showTierModal, setShowTierModal] = useState(false);
+  const [showTestSubscriptionModal, setShowTestSubscriptionModal] = useState(false);
   const [currentTier, setCurrentTier] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const [testSubscriptionData, setTestSubscriptionData] = useState({
+    familyId: '',
+    tierId: '',
+    stripeCustomerId: 'cus_test_' + Math.random().toString(36).substring(2, 10),
+    stripeSubscriptionId: 'sub_test_' + Math.random().toString(36).substring(2, 10),
+    status: 'active'
+  });
   
   useEffect(() => {
     fetchData();
@@ -47,6 +57,10 @@ const SubscriptionManagement = () => {
       // Fetch recent payments
       const paymentsResponse = await axios.get('/api/admin/subscription/payments');
       setPayments(paymentsResponse.data.payments);
+      
+      // Fetch families for test subscription creation
+      const familiesResponse = await axios.get('/api/admin/families');
+      setFamilies(familiesResponse.data.families || []);
       
       setError(null);
     } catch (err) {
@@ -97,6 +111,82 @@ const SubscriptionManagement = () => {
       setError(null);
     } catch (err) {
       setError(`Error ${editMode ? 'updating' : 'creating'} tier: ` + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const handleCreateTestSubscription = () => {
+    // Initialize with default values
+    if (families.length > 0) {
+      testSubscriptionData.familyId = families[0].id;
+    }
+    if (tiers.length > 0) {
+      testSubscriptionData.tierId = tiers[0].id;
+    }
+    
+    setShowTestSubscriptionModal(true);
+  };
+  
+  const handleTestSubscriptionSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      setLoading(true);
+      
+      // Call API to create test subscription
+      await axios.post('/api/admin/subscription/test', testSubscriptionData);
+      
+      // Refresh subscriptions
+      const response = await axios.get('/api/admin/subscription/active');
+      setSubscriptions(response.data.subscriptions);
+      
+      setShowTestSubscriptionModal(false);
+      setError(null);
+      
+      // Show success message
+      alert('Test subscription created successfully!');
+    } catch (err) {
+      setError('Error creating test subscription: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const handleDeleteTier = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this tier?')) {
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      await axios.delete(`/api/admin/subscription/tiers/${id}`);
+      
+      // Refresh tiers
+      const response = await axios.get('/api/admin/subscription/tiers');
+      setTiers(response.data.tiers);
+      
+      setError(null);
+    } catch (err) {
+      setError('Error deleting tier: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const handleTriggerWebhook = async (subscriptionId, eventType) => {
+    try {
+      setLoading(true);
+      
+      await axios.post('/api/admin/subscription/trigger-webhook', {
+        subscriptionId,
+        eventType
+      });
+      
+      setError(null);
+      alert(`Webhook event ${eventType} triggered successfully`);
+    } catch (err) {
+      setError('Error triggering webhook: ' + err.message);
     } finally {
       setLoading(false);
     }
@@ -175,9 +265,21 @@ const SubscriptionManagement = () => {
                             variant="outline-primary"
                             size="sm"
                             href={`/admin/subscriptions/${sub.id}`}
+                            className="me-2"
                           >
                             Details
                           </Button>
+                          <div className="btn-group">
+                            <Button variant="outline-secondary" size="sm" id={`dropdown-${sub.id}`} className="dropdown-toggle" data-bs-toggle="dropdown">
+                              Actions
+                            </Button>
+                            <ul className="dropdown-menu" aria-labelledby={`dropdown-${sub.id}`}>
+                              <li><a className="dropdown-item" href="#" onClick={() => handleTriggerWebhook(sub.id, 'invoice.payment_succeeded')}>Trigger Payment Success</a></li>
+                              <li><a className="dropdown-item" href="#" onClick={() => handleTriggerWebhook(sub.id, 'invoice.payment_failed')}>Trigger Payment Failed</a></li>
+                              <li><a className="dropdown-item" href="#" onClick={() => handleTriggerWebhook(sub.id, 'customer.subscription.updated')}>Trigger Subscription Update</a></li>
+                              <li><a className="dropdown-item" href="#" onClick={() => handleTriggerWebhook(sub.id, 'customer.subscription.deleted')}>Trigger Subscription Deleted</a></li>
+                            </ul>
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -204,13 +306,15 @@ const SubscriptionManagement = () => {
                     <th>Monthly Price</th>
                     <th>Yearly Price</th>
                     <th>Status</th>
+                    <th>Stripe Monthly Price ID</th>
+                    <th>Stripe Yearly Price ID</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tiers.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className="text-center py-4">
+                      <td colSpan="7" className="text-center py-4">
                         No subscription tiers found.
                       </td>
                     </tr>
@@ -224,6 +328,12 @@ const SubscriptionManagement = () => {
                           <Badge bg={tier.is_active ? 'success' : 'secondary'}>
                             {tier.is_active ? 'Active' : 'Inactive'}
                           </Badge>
+                        </td>
+                        <td>
+                          <small>{tier.stripe_price_id_monthly || 'Not set'}</small>
+                        </td>
+                        <td>
+                          <small>{tier.stripe_price_id_yearly || 'Not set'}</small>
                         </td>
                         <td>
                           <Button 
@@ -300,6 +410,97 @@ const SubscriptionManagement = () => {
                   )}
                 </tbody>
               </Table>
+            </Card.Body>
+          </Card>
+        </Tab>
+        
+        <Tab eventKey="test" title="Test Subscriptions">
+          <Card>
+            <Card.Header className="d-flex justify-content-between align-items-center">
+              <h5 className="mb-0">Test Subscription Tools</h5>
+              <Button variant="primary" onClick={handleCreateTestSubscription}>
+                Create Test Subscription
+              </Button>
+            </Card.Header>
+            <Card.Body>
+              <Row>
+                <Col md={6}>
+                  <h6>What are test subscriptions?</h6>
+                  <p>
+                    Test subscriptions allow you to create subscription records in your database
+                    for testing webhook handlers and subscription management features without
+                    actually charging customers or interacting with Stripe.
+                  </p>
+                  
+                  <h6 className="mt-4">Available webhook tests:</h6>
+                  <ListGroup>
+                    <ListGroup.Item className="d-flex justify-content-between align-items-center">
+                      Invoice Payment Succeeded
+                      <Button 
+                        variant="outline-primary" 
+                        size="sm"
+                        onClick={() => stripe && stripe.triggerWebhook('invoice.payment_succeeded')}
+                        disabled={!window.stripe}
+                      >
+                        Test with Stripe CLI
+                      </Button>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="d-flex justify-content-between align-items-center">
+                      Invoice Payment Failed
+                      <Button 
+                        variant="outline-primary" 
+                        size="sm"
+                        onClick={() => stripe && stripe.triggerWebhook('invoice.payment_failed')}
+                        disabled={!window.stripe}
+                      >
+                        Test with Stripe CLI
+                      </Button>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="d-flex justify-content-between align-items-center">
+                      Subscription Updated
+                      <Button 
+                        variant="outline-primary" 
+                        size="sm"
+                        onClick={() => stripe && stripe.triggerWebhook('customer.subscription.updated')}
+                        disabled={!window.stripe}
+                      >
+                        Test with Stripe CLI
+                      </Button>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="d-flex justify-content-between align-items-center">
+                      Subscription Deleted
+                      <Button 
+                        variant="outline-primary" 
+                        size="sm"
+                        onClick={() => stripe && stripe.triggerWebhook('customer.subscription.deleted')}
+                        disabled={!window.stripe}
+                      >
+                        Test with Stripe CLI
+                      </Button>
+                    </ListGroup.Item>
+                  </ListGroup>
+                </Col>
+                
+                <Col md={6}>
+                  <h6>Recent webhook events</h6>
+                  <div className="bg-light p-3 rounded" style={{minHeight: '200px', maxHeight: '300px', overflow: 'auto'}}>
+                    <code>
+                      <pre id="webhook-log">No webhook events logged yet</pre>
+                    </code>
+                  </div>
+                  
+                  <h6 className="mt-4">Stripe CLI commands</h6>
+                  <div className="bg-light p-3 rounded">
+                    <code>
+                      # Listen for webhooks<br />
+                      stripe listen --forward-to https://your-app-url.com/api/subscription/webhook<br /><br />
+                      
+                      # Trigger event<br />
+                      stripe trigger invoice.payment_succeeded
+                    </code>
+                  </div>
+                </Col>
+              </Row>
             </Card.Body>
           </Card>
         </Tab>
@@ -467,6 +668,91 @@ const SubscriptionManagement = () => {
             </Button>
             <Button variant="primary" type="submit" disabled={loading}>
               {loading ? 'Saving...' : (editMode ? 'Update' : 'Create')}
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+      
+      {/* Test Subscription Modal */}
+      <Modal show={showTestSubscriptionModal} onHide={() => setShowTestSubscriptionModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Create Test Subscription</Modal.Title>
+        </Modal.Header>
+        <Form onSubmit={handleTestSubscriptionSubmit}>
+          <Modal.Body>
+            <Form.Group className="mb-3">
+              <Form.Label>Family*</Form.Label>
+              <Form.Select
+                required
+                value={testSubscriptionData.familyId}
+                onChange={(e) => setTestSubscriptionData({...testSubscriptionData, familyId: e.target.value})}
+              >
+                <option value="">Select a family</option>
+                {families.map(family => (
+                  <option key={family.id} value={family.id}>{family.family_name}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            
+            <Form.Group className="mb-3">
+              <Form.Label>Subscription Tier*</Form.Label>
+              <Form.Select
+                required
+                value={testSubscriptionData.tierId}
+                onChange={(e) => setTestSubscriptionData({...testSubscriptionData, tierId: e.target.value})}
+              >
+                <option value="">Select a tier</option>
+                {tiers.map(tier => (
+                  <option key={tier.id} value={tier.id}>{tier.name} (${tier.price_monthly}/month)</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            
+            <Form.Group className="mb-3">
+              <Form.Label>Stripe Customer ID</Form.Label>
+              <Form.Control
+                type="text"
+                value={testSubscriptionData.stripeCustomerId}
+                onChange={(e) => setTestSubscriptionData({...testSubscriptionData, stripeCustomerId: e.target.value})}
+                placeholder="cus_test_123456"
+              />
+              <Form.Text className="text-muted">
+                For testing purposes only. Will be saved as payment_provider_customer_id.
+              </Form.Text>
+            </Form.Group>
+            
+            <Form.Group className="mb-3">
+              <Form.Label>Stripe Subscription ID</Form.Label>
+              <Form.Control
+                type="text"
+                value={testSubscriptionData.stripeSubscriptionId}
+                onChange={(e) => setTestSubscriptionData({...testSubscriptionData, stripeSubscriptionId: e.target.value})}
+                placeholder="sub_test_123456"
+              />
+              <Form.Text className="text-muted">
+                For testing purposes only. Will be saved as payment_provider_subscription_id.
+              </Form.Text>
+            </Form.Group>
+            
+            <Form.Group className="mb-3">
+              <Form.Label>Status</Form.Label>
+              <Form.Select
+                value={testSubscriptionData.status}
+                onChange={(e) => setTestSubscriptionData({...testSubscriptionData, status: e.target.value})}
+              >
+                <option value="active">Active</option>
+                <option value="trialing">Trialing</option>
+                <option value="past_due">Past Due</option>
+                <option value="canceled">Canceled</option>
+              </Form.Select>
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowTestSubscriptionModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit" disabled={loading}>
+              {loading ? 'Creating...' : 'Create Test Subscription'}
             </Button>
           </Modal.Footer>
         </Form>

@@ -14,6 +14,7 @@ import AffiliateNetworksTable from './components/AffiliateManagement/AffiliateNe
 import AffiliateLinkForm from './components/AffiliateManagement/AffiliateLinkForm';
 import AffiliateLinkStats from './components/AffiliateManagement/AffiliateLinkStats';
 import SystemSettings from './components/SystemSettings/SystemSettings';
+import SubscriptionManagement from './components/Admin/SubscriptionManagement';
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -67,49 +68,62 @@ function App() {
         } />
 
         {/* Family Management Routes */}
-<Route path="/families" element={
-  <ProtectedRoute>
-    <FamiliesLanding />
-  </ProtectedRoute>
-} />
+        <Route path="/families" element={
+          <ProtectedRoute>
+            <FamiliesLanding />
+          </ProtectedRoute>
+        } />
 
-{/* Affiliate Management Routes */}
-<Route path="/affiliate" element={
-  <ProtectedRoute>
-    <AffiliateMarketingDashboard />
-  </ProtectedRoute>
-} />
-<Route path="/affiliate/links" element={
-  <ProtectedRoute>
-    <AffiliateMarketingDashboard />
-  </ProtectedRoute>
-} />
-<Route path="/affiliate/networks" element={
-  <ProtectedRoute>
-    <AffiliateNetworksTable />
-  </ProtectedRoute>
-} />
-<Route path="/affiliate/links/new" element={
-  <ProtectedRoute>
-    <AffiliateLinkForm />
-  </ProtectedRoute>
-} />
-<Route path="/affiliate/links/edit/:id" element={
-  <ProtectedRoute>
-    <AffiliateLinkForm />
-  </ProtectedRoute>
-} />
-<Route path="/affiliate/links/stats/:id" element={
-  <ProtectedRoute>
-    <AffiliateLinkStats />
-  </ProtectedRoute>
-} />
+        {/* Subscription Management Routes */}
+        <Route path="/subscriptions" element={
+          <ProtectedRoute>
+            <SubscriptionManagement />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/admin/subscriptions/:id" element={
+          <ProtectedRoute>
+            <SubscriptionManagement />
+          </ProtectedRoute>
+        } />
 
-<Route path="/settings" element={
-  <ProtectedRoute>
-    <SystemSettings />
-  </ProtectedRoute>
-} />
+        {/* Affiliate Management Routes */}
+        <Route path="/affiliate" element={
+          <ProtectedRoute>
+            <AffiliateMarketingDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/affiliate/links" element={
+          <ProtectedRoute>
+            <AffiliateMarketingDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/affiliate/networks" element={
+          <ProtectedRoute>
+            <AffiliateNetworksTable />
+          </ProtectedRoute>
+        } />
+        <Route path="/affiliate/links/new" element={
+          <ProtectedRoute>
+            <AffiliateLinkForm />
+          </ProtectedRoute>
+        } />
+        <Route path="/affiliate/links/edit/:id" element={
+          <ProtectedRoute>
+            <AffiliateLinkForm />
+          </ProtectedRoute>
+        } />
+        <Route path="/affiliate/links/stats/:id" element={
+          <ProtectedRoute>
+            <AffiliateLinkStats />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/settings" element={
+          <ProtectedRoute>
+            <SystemSettings />
+          </ProtectedRoute>
+        } />
         
         {/* Redirect any unknown routes to dashboard */}
         <Route path="*" element={<Navigate to="/" />} />
