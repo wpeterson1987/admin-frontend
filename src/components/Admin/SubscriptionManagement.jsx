@@ -51,24 +51,34 @@ const SubscriptionManagement = () => {
       setTiers(tiersResponse.data.tiers);
       
       // Fetch active subscriptions
-      const subscriptionsResponse = await axios.get('/api/admin/subscription/active');
-      setSubscriptions(subscriptionsResponse.data.subscriptions);
+      try {
+        const subscriptionsResponse = await axios.get('/api/admin/subscription/active');
+        setSubscriptions(subscriptionsResponse.data.subscriptions);
+      } catch (err) {
+        console.log('No active subscriptions found');
+        setSubscriptions([]);
+      }
       
       // Fetch recent payments
-      const paymentsResponse = await axios.get('/api/admin/subscription/payments');
-      setPayments(paymentsResponse.data.payments);
+      try {
+        const paymentsResponse = await axios.get('/api/admin/subscription/payments');
+        setPayments(paymentsResponse.data.payments);
+      } catch (err) {
+        console.log('No payment history found');
+        setPayments([]);
+      }
       
       // Fetch families for test subscription creation
       const familiesResponse = await axios.get('/api/admin/families');
-      setFamilies(familiesResponse.data.families || []);
-      
-      setError(null);
-    } catch (err) {
-      setError('Error loading subscription data: ' + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setFamilies(familiesResponse.data.families || []);
+    
+    setError(null);
+  } catch (err) {
+    setError('Error loading subscription data: ' + err.message);
+  } finally {
+    setLoading(false);
+  }
+};
   
   const handleCreateTier = () => {
     setCurrentTier({
