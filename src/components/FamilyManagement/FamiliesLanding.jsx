@@ -10,7 +10,7 @@ const FamiliesLanding = () => {
     const fetchFamilies = async () => {
       try {
         // Change this from '/api/families' to '/api/admin/families'
-        const response = await axios.get('/api/admin/families');
+        const response = await axios.get('/api/families');
         setFamilies(response.data.families);
       } catch (error) {
         console.error('Error fetching families:', error);
