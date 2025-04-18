@@ -7,22 +7,13 @@ const FamiliesLanding = () => {
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    // Fetch families data
-    // Replace with your actual API call
     const fetchFamilies = async () => {
       try {
-        // Mock data for now
-        setTimeout(() => {
-          setFamilies([
-            { id: 1, name: 'Smith Family', memberCount: 4 },
-            { id: 2, name: 'Johnson Family', memberCount: 3 },
-            // Add more families as needed
-          ]);
-          setLoading(false);
-        }, 500);
-      } catch (err) {
-        console.error('Error fetching families:', err);
-        setLoading(false);
+        // Change this from '/api/families' to '/api/admin/families'
+        const response = await axios.get('/api/admin/families');
+        setFamilies(response.data.families);
+      } catch (error) {
+        console.error('Error fetching families:', error);
       }
     };
     
