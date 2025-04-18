@@ -34,6 +34,19 @@ const FamiliesLanding = () => {
       setLoading(false);
     }
   };
+
+  const [subscriptionTiers, setSubscriptionTiers] = useState([]);
+
+// Add this to your useEffect or as a separate function
+const fetchSubscriptionTiers = async () => {
+  try {
+    const response = await axios.get('/api/admin/subscription/tiers');
+    console.log('Subscription tiers:', response.data);
+    setSubscriptionTiers(response.data.tiers || []);
+  } catch (error) {
+    console.error('Error fetching subscription tiers:', error);
+  }
+};
   
   // Function to handle opening the create family modal
   const handleCreateFamily = () => {
@@ -205,9 +218,20 @@ const FamiliesLanding = () => {
                       value={newFamily.subscription_tier_id}
                       onChange={(e) => setNewFamily({...newFamily, subscription_tier_id: e.target.value})}
                     >
-                      <option value="basic">Basic</option>
-                      <option value="professional">Professional</option>
-                    </select>
+                      {subscriptionTiers.length > 0 ? (
+    subscriptionTiers.map(tier => (
+      <option key={tier.id} value={tier.id}>
+        {tier.name}
+      </option>
+    ))
+  ) : (
+    <>
+      <option value="">Select a tier</option>
+      <option value="1">Basic</option>
+      <option value="2">Professional</option>
+    </>
+  )}
+</select>
                   </div>
                   <div className="d-flex justify-content-end">
                     <button 
