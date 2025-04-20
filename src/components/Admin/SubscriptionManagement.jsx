@@ -215,7 +215,7 @@ const SubscriptionManagement = () => {
     
     <Container className="py-4">
       <h2 className="mb-4">Subscription Management</h2>
-      <Link to="/" className="btn btn-secondary">Back to Dashboard</Link>
+      
       
       {error && <Alert variant="danger">{error}</Alert>}
             
