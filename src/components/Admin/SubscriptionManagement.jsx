@@ -214,8 +214,10 @@ const SubscriptionManagement = () => {
   return (
     
     <Container className="py-4">
-      <h2 className="mb-4">Subscription Management</h2>
-      
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1>Subscription Management</h1>
+        <Link to="/" className="btn btn-secondary">Back to Dashboard</Link>
+      </div>
       
       {error && <Alert variant="danger">{error}</Alert>}
             
