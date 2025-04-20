@@ -148,6 +148,10 @@ const FamiliesLanding = () => {
                                (family.subscription_tier_id ? `Tier ${family.subscription_tier_id}` : 'None'))}
                             </td>
                             <td>
+                            <td>
+                              {family.memberCount !== undefined ? family.memberCount : 
+                              (family.Members ? family.Members.length : 0)} members
+                            </td>
                               <button 
                                 className="btn btn-sm btn-info me-2"
                                 onClick={() => handleViewFamily(family.id)}
