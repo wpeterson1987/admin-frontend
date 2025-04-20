@@ -155,9 +155,8 @@ const FamilyDetails = () => {
                     <tr key={member.id}>
                       <td>
                         {member.User ? 
-                          `${member.User.first_name || ''} ${member.User.last_name || ''}`.trim() || 
-                          member.User.email : 
-                          'Unknown User'}
+                        member.User.name || member.User.email : 
+                        'Unknown User'}
                       </td>
                       <td>{member.User?.email || 'N/A'}</td>
                       <td>
