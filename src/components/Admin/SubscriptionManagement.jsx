@@ -212,10 +212,17 @@ const SubscriptionManagement = () => {
   }
   
   return (
+    
     <Container className="py-4">
       <h2 className="mb-4">Subscription Management</h2>
       
       {error && <Alert variant="danger">{error}</Alert>}
+      <div className="navbar">
+        <Link to="/" className="btn btn-secondary">
+          <i className="fas fa-arrow-left"></i> Back to Dashboard
+        </Link>
+
+        </div>
       
       <Tabs
         activeKey={activeTab}
