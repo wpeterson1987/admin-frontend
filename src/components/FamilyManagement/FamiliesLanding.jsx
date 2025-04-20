@@ -1,59 +1,67 @@
 // src/components/FamilyManagement/FamiliesLanding.jsx
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Add useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const FamiliesLanding = () => {
   const [families, setFamilies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // New state for create family modal
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newFamily, setNewFamily] = useState({ family_name: '', subscription_tier_id: 'basic' });
+  const [newFamily, setNewFamily] = useState({ family_name: '', subscription_tier_id: '' });
+  const [subscriptionTiers, setSubscriptionTiers] = useState([]);
   
-  const navigate = useNavigate(); // For navigation
+  const navigate = useNavigate();
   
   useEffect(() => {
-    fetchFamilies();
+    fetchData();
   }, []);
   
-  const fetchFamilies = async () => {
+  const fetchData = async () => {
     try {
       setLoading(true);
       setError(null);
-      console.log('Fetching families from admin endpoint');
       
-      const response = await axios.get('/api/admin/families');
-      console.log('Received families response:', response.data);
+      // Fetch families
+      const familiesResponse = await axios.get('/api/admin/families');
+      console.log('Families data:', familiesResponse.data);
+      setFamilies(familiesResponse.data.families || []);
       
-      setFamilies(response.data.families || []);
+      // Fetch subscription tiers
+      const tiersResponse = await axios.get('/api/admin/subscription/tiers');
+      console.log('Subscription tiers:', tiersResponse.data);
+      setSubscriptionTiers(tiersResponse.data.tiers || []);
+      
     } catch (error) {
-      console.error('Error fetching families:', error);
-      setError('Failed to load families. Please try again.');
+      console.error('Error fetching data:', error);
+      setError('Failed to load data. Please try again.');
     } finally {
       setLoading(false);
     }
   };
-
-  const [subscriptionTiers, setSubscriptionTiers] = useState([]);
-
-// Add this to your useEffect or as a separate function
-const fetchSubscriptionTiers = async () => {
-  try {
-    const response = await axios.get('/api/admin/subscription/tiers');
-    console.log('Subscription tiers:', response.data);
-    setSubscriptionTiers(response.data.tiers || []);
-  } catch (error) {
-    console.error('Error fetching subscription tiers:', error);
-  }
-};
   
-  // Function to handle opening the create family modal
+  const fetchFamilies = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/admin/families');
+      setFamilies(response.data.families || []);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error refreshing families:', error);
+      setError('Failed to refresh families');
+      setLoading(false);
+    }
+  };
+  
   const handleCreateFamily = () => {
+    // Reset form and select default tier if available
+    setNewFamily({ 
+      family_name: '', 
+      subscription_tier_id: subscriptionTiers.length > 0 ? subscriptionTiers[0].id : ''
+    });
     setShowCreateModal(true);
   };
   
-  // Function to submit new family
   const handleSubmitFamily = async (e) => {
     e.preventDefault();
     try {
@@ -61,25 +69,21 @@ const fetchSubscriptionTiers = async () => {
       const response = await axios.post('/api/admin/families', newFamily);
       console.log('Family created:', response.data);
       
-      // Close modal and refresh families
       setShowCreateModal(false);
-      setNewFamily({ family_name: '', subscription_tier_id: 'basic' });
-      fetchFamilies();
+      await fetchFamilies();
       
     } catch (error) {
       console.error('Error creating family:', error);
-      setError('Failed to create family. Please try again.');
+      setError('Failed to create family: ' + (error.response?.data?.message || error.message));
     } finally {
       setLoading(false);
     }
   };
   
-  // Function to view a family's details
   const handleViewFamily = (familyId) => {
     navigate(`/admin/families/${familyId}`);
   };
   
-  // Function to edit a family
   const handleEditFamily = (familyId) => {
     navigate(`/admin/families/edit/${familyId}`);
   };
@@ -139,8 +143,9 @@ const fetchSubscriptionTiers = async () => {
                               {family.Members ? family.Members.length : 0} members
                             </td>
                             <td>
-                              {family.SubscriptionTier ? family.SubscriptionTier.name : 
-                               (family.subscription_tier_id || 'Basic')}
+                              {family.subscription_name || 
+                               (family.SubscriptionTier ? family.SubscriptionTier.name : 
+                               (family.subscription_tier_id ? `Tier ${family.subscription_tier_id}` : 'None'))}
                             </td>
                             <td>
                               <button 
@@ -218,20 +223,13 @@ const fetchSubscriptionTiers = async () => {
                       value={newFamily.subscription_tier_id}
                       onChange={(e) => setNewFamily({...newFamily, subscription_tier_id: e.target.value})}
                     >
-                      {subscriptionTiers.length > 0 ? (
-    subscriptionTiers.map(tier => (
-      <option key={tier.id} value={tier.id}>
-        {tier.name}
-      </option>
-    ))
-  ) : (
-    <>
-      <option value="">Select a tier</option>
-      <option value="1">Basic</option>
-      <option value="2">Professional</option>
-    </>
-  )}
-</select>
+                      <option value="">No Subscription</option>
+                      {subscriptionTiers.map(tier => (
+                        <option key={tier.id} value={tier.id}>
+                          {tier.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div className="d-flex justify-content-end">
                     <button 

@@ -9,6 +9,8 @@ import UsersList from './components/UserManagement/UsersList';
 import UserForm from './components/UserManagement/UserForm';
 import PasswordForm from './components/UserManagement/PasswordForm';
 import FamiliesLanding from './components/FamilyManagement/FamiliesLanding';
+import FamilyDetails from './components/FamilyManagement/FamilyDetails';
+import FamilyEdit from './components/FamilyManagement/FamilyEdit';
 import AffiliateMarketingDashboard from './components/AffiliateManagement/AffiliateMarketingDashboard';
 import AffiliateNetworksTable from './components/AffiliateManagement/AffiliateNetworksTable';
 import AffiliateLinkForm from './components/AffiliateManagement/AffiliateLinkForm';
@@ -71,6 +73,19 @@ function App() {
         <Route path="/families" element={
           <ProtectedRoute>
             <FamiliesLanding />
+          </ProtectedRoute>
+        } />
+        
+        {/* New Family Detail Routes */}
+        <Route path="/admin/families/:id" element={
+          <ProtectedRoute>
+            <FamilyDetails />
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/admin/families/edit/:id" element={
+          <ProtectedRoute>
+            <FamilyEdit />
           </ProtectedRoute>
         } />
 
