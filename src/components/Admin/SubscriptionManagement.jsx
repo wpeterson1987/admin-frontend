@@ -450,7 +450,7 @@ const SubscriptionManagement = () => {
                       <Button 
                         variant="outline-primary" 
                         size="sm"
-                        onClick={() => stripe && stripe.triggerWebhook('invoice.payment_succeeded')}
+                        onClick={() => window.stripe && window.stripe.triggerWebhook('invoice.payment_succeeded')}
                         disabled={!window.stripe}
                       >
                         Test with Stripe CLI
@@ -461,7 +461,7 @@ const SubscriptionManagement = () => {
                       <Button 
                         variant="outline-primary" 
                         size="sm"
-                        onClick={() => stripe && stripe.triggerWebhook('invoice.payment_failed')}
+                        onClick={() => window.stripe && window.stripe.triggerWebhook('invoice.payment_failed')}
                         disabled={!window.stripe}
                       >
                         Test with Stripe CLI
@@ -472,7 +472,7 @@ const SubscriptionManagement = () => {
                       <Button 
                         variant="outline-primary" 
                         size="sm"
-                        onClick={() => stripe && stripe.triggerWebhook('customer.subscription.updated')}
+                        onClick={() => window.stripe && window.stripe.triggerWebhook('customer.subscription.updated')}
                         disabled={!window.stripe}
                       >
                         Test with Stripe CLI
@@ -483,7 +483,7 @@ const SubscriptionManagement = () => {
                       <Button 
                         variant="outline-primary" 
                         size="sm"
-                        onClick={() => stripe && stripe.triggerWebhook('customer.subscription.deleted')}
+                        onClick={() => window.stripe && window.stripe.triggerWebhook('customer.subscription.deleted')}
                         disabled={!window.stripe}
                       >
                         Test with Stripe CLI

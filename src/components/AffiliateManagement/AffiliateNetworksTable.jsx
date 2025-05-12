@@ -364,7 +364,7 @@ const AffiliateNetworksTable = () => {
                 required
               />
               <Form.Text className="text-muted">
-                Pattern for generating affiliate URLs. Use {product_id} and {affiliate_id} as placeholders.
+                Pattern for generating affiliate URLs. Use "{'{product_id}'}" and "{'{affiliate_id}'}" as placeholders.
               </Form.Text>
             </Form.Group>
             
