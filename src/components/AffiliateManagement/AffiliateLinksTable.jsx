@@ -11,7 +11,6 @@ import {
   Alert
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { BsSearch, BsPencil, BsToggleOn, BsToggleOff, BsBarChart } from 'react-icons/bs';
 
 const AffiliateLinksTable = () => {

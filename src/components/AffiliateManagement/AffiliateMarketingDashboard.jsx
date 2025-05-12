@@ -11,12 +11,9 @@ import {
   Spinner
 } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { 
   BarChart, 
   Bar, 
-  LineChart, 
-  Line, 
   XAxis, 
   YAxis, 
   CartesianGrid, 
@@ -41,7 +38,7 @@ const AffiliateMarketingDashboard = () => {
   const [statistics, setStatistics] = useState(null);
   const [period, setPeriod] = useState('month');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error] = useState(null);
   
   // Fetch statistics data
   //useEffect(() => {

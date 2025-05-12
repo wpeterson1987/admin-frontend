@@ -10,7 +10,6 @@ import {
   Form
 } from 'react-bootstrap';
 import { BsPencil, BsTrash, BsCheckCircle, BsXCircle } from 'react-icons/bs';
-import axios from 'axios';
 
 const AffiliateNetworksTable = () => {
   // State variables

@@ -11,7 +11,7 @@ import {
 } from '../../utils/api';
 import './UserFamilyManagement.css';
 
-const UserFamilyManagement = ({ user }) => {
+const UserFamilyManagement = () => {
   const { id: userId } = useParams();
   const [families, setFamilies] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -11,7 +11,6 @@ import {
   InputGroup
 } from 'react-bootstrap';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
 
 const AffiliateLinkForm = () => {
   const navigate = useNavigate();
