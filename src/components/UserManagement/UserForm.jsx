@@ -93,8 +93,8 @@ const UserForm = () => {
           navigate('/users');
         }, 1500);
       } else {
-        // Don't send password in update (empty string)
-        const { password, ...updateData } = formData;
+        // Don't send password in update (using underscore convention for unused variables)
+        const { password: _, ...updateData } = formData;
         await updateUser(id, updateData);
         setSuccess('User updated successfully!');
         
