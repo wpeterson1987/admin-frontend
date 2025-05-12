@@ -24,8 +24,7 @@ import {
   Line
 } from 'recharts';
 
-// Import affiliate marketing components - only what we need
-import AffiliateNetworksTable from './AffiliateNetworksTable';
+// No imports needed from other affiliate components
 
 const AffiliateLinkStats = () => {
   const { id } = useParams();
