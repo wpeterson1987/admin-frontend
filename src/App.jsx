@@ -16,7 +16,19 @@ import AffiliateNetworksTable from './components/AffiliateManagement/AffiliateNe
 import AffiliateLinkForm from './components/AffiliateManagement/AffiliateLinkForm';
 import AffiliateLinkStats from './components/AffiliateManagement/AffiliateLinkStats';
 import SystemSettings from './components/SystemSettings/SystemSettings';
-import SubscriptionManagement from './components/Admin/SubscriptionManagement';
+import AdminSubscriptionManagement from './components/Admin/SubscriptionManagement';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+// User components
+import UserDashboard from './components/UserDashboard/UserDashboard';
+import AccountLayout from './components/UserAccount/AccountLayout';
+import UserSubscriptionManagement from './SubscriptionManagement/SubscriptionManagement';
+import UserProfile from './components/UserAccount/UserProfile';
+import AccountSettings from './components/UserAccount/AccountSettings';
+
+// Initialize Stripe with your publishable key
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'your_stripe_publishable_key');
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -26,123 +38,156 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Admin route wrapper
+const AdminRoute = ({ children }) => {
+  // This is a simplified check - you'd likely have more robust role checking
+  if (!isAuthenticated() || !localStorage.getItem('isAdmin')) {
+    return <Navigate to="/" />;
+  }
+  return children;
+};
+
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        
-        <Route path="/" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/networks" element={
-          <ProtectedRoute>
-            <NetworkList />
-          </ProtectedRoute>
-        } />
+      <Elements stripe={stripePromise}>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/login" element={<LoginPage />} />
+          
+          {/* User routes */}
+          <Route path="/" element={
+            <ProtectedRoute>
+              <UserDashboard />
+            </ProtectedRoute>
+          } />
+          
+          {/* User Account routes with layout */}
+          <Route path="/account" element={
+            <ProtectedRoute>
+              <AccountLayout />
+            </ProtectedRoute>
+          }>
+            <Route path="profile" element={<UserProfile />} />
+            <Route path="subscription" element={<UserSubscriptionManagement />} />
+            <Route path="settings" element={<AccountSettings />} />
+            {/* Add other account-related routes here */}
+            <Route index element={<Navigate to="/account/profile" replace />} />
+          </Route>
+          
+          {/* Admin routes */}
+          <Route path="/admin" element={
+            <AdminRoute>
+              <Dashboard />
+            </AdminRoute>
+          } />
+          
+          <Route path="/networks" element={
+            <AdminRoute>
+              <NetworkList />
+            </AdminRoute>
+          } />
 
-        {/* User Management Routes */}
-        <Route path="/users" element={
-          <ProtectedRoute>
-            <UsersList />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/users/:id/edit" element={
-          <ProtectedRoute>
-            <UserForm />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/users/new" element={
-          <ProtectedRoute>
-            <UserForm />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/users/:id/password" element={
-          <ProtectedRoute>
-            <PasswordForm />
-          </ProtectedRoute>
-        } />
+          {/* User Management Routes */}
+          <Route path="/users" element={
+            <AdminRoute>
+              <UsersList />
+            </AdminRoute>
+          } />
+          
+          <Route path="/users/:id/edit" element={
+            <AdminRoute>
+              <UserForm />
+            </AdminRoute>
+          } />
+          
+          <Route path="/users/new" element={
+            <AdminRoute>
+              <UserForm />
+            </AdminRoute>
+          } />
+          
+          <Route path="/users/:id/password" element={
+            <AdminRoute>
+              <PasswordForm />
+            </AdminRoute>
+          } />
 
-        {/* Family Management Routes */}
-        <Route path="/families" element={
-          <ProtectedRoute>
-            <FamiliesLanding />
-          </ProtectedRoute>
-        } />
-        
-        {/* New Family Detail Routes */}
-        <Route path="/admin/families/:id" element={
-          <ProtectedRoute>
-            <FamilyDetails />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/admin/families/edit/:id" element={
-          <ProtectedRoute>
-            <FamilyEdit />
-          </ProtectedRoute>
-        } />
+          {/* Family Management Routes */}
+          <Route path="/families" element={
+            <AdminRoute>
+              <FamiliesLanding />
+            </AdminRoute>
+          } />
+          
+          {/* New Family Detail Routes */}
+          <Route path="/admin/families/:id" element={
+            <AdminRoute>
+              <FamilyDetails />
+            </AdminRoute>
+          } />
+          
+          <Route path="/admin/families/edit/:id" element={
+            <AdminRoute>
+              <FamilyEdit />
+            </AdminRoute>
+          } />
 
-        {/* Subscription Management Routes */}
-        <Route path="/subscriptions" element={
-          <ProtectedRoute>
-            <SubscriptionManagement />
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/admin/subscriptions/:id" element={
-          <ProtectedRoute>
-            <SubscriptionManagement />
-          </ProtectedRoute>
-        } />
+          {/* Admin Subscription Management Routes */}
+          <Route path="/subscriptions" element={
+            <AdminRoute>
+              <AdminSubscriptionManagement />
+            </AdminRoute>
+          } />
+          
+          <Route path="/admin/subscriptions/:id" element={
+            <AdminRoute>
+              <AdminSubscriptionManagement />
+            </AdminRoute>
+          } />
 
-        {/* Affiliate Management Routes */}
-        <Route path="/affiliate" element={
-          <ProtectedRoute>
-            <AffiliateMarketingDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/affiliate/links" element={
-          <ProtectedRoute>
-            <AffiliateMarketingDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/affiliate/networks" element={
-          <ProtectedRoute>
-            <AffiliateNetworksTable />
-          </ProtectedRoute>
-        } />
-        <Route path="/affiliate/links/new" element={
-          <ProtectedRoute>
-            <AffiliateLinkForm />
-          </ProtectedRoute>
-        } />
-        <Route path="/affiliate/links/edit/:id" element={
-          <ProtectedRoute>
-            <AffiliateLinkForm />
-          </ProtectedRoute>
-        } />
-        <Route path="/affiliate/links/stats/:id" element={
-          <ProtectedRoute>
-            <AffiliateLinkStats />
-          </ProtectedRoute>
-        } />
+          {/* Affiliate Management Routes */}
+          <Route path="/affiliate" element={
+            <AdminRoute>
+              <AffiliateMarketingDashboard />
+            </AdminRoute>
+          } />
+          <Route path="/affiliate/links" element={
+            <AdminRoute>
+              <AffiliateMarketingDashboard />
+            </AdminRoute>
+          } />
+          <Route path="/affiliate/networks" element={
+            <AdminRoute>
+              <AffiliateNetworksTable />
+            </AdminRoute>
+          } />
+          <Route path="/affiliate/links/new" element={
+            <AdminRoute>
+              <AffiliateLinkForm />
+            </AdminRoute>
+          } />
+          <Route path="/affiliate/links/edit/:id" element={
+            <AdminRoute>
+              <AffiliateLinkForm />
+            </AdminRoute>
+          } />
+          <Route path="/affiliate/links/stats/:id" element={
+            <AdminRoute>
+              <AffiliateLinkStats />
+            </AdminRoute>
+          } />
 
-        <Route path="/settings" element={
-          <ProtectedRoute>
-            <SystemSettings />
-          </ProtectedRoute>
-        } />
-        
-        {/* Redirect any unknown routes to dashboard */}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+          <Route path="/settings" element={
+            <AdminRoute>
+              <SystemSettings />
+            </AdminRoute>
+          } />
+          
+          {/* Redirect any unknown routes to dashboard */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Elements>
     </BrowserRouter>
   );
 }
