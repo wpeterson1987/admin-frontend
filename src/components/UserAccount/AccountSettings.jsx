@@ -1,6 +1,6 @@
 // src/components/UserAccount/AccountSettings.jsx
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 
 const AccountSettings = () => {
   const [settings, setSettings] = useState({
