@@ -23,7 +23,7 @@ import { loadStripe } from '@stripe/stripe-js';
 // User components
 import UserDashboard from './components/UserDashboard/UserDashboard';
 import AccountLayout from './components/UserAccount/AccountLayout';
-import UserSubscriptionManagement from './SubscriptionManagement/SubscriptionManagement';
+import UserSubscriptionManagement from './SubscriptionManagement/UserSubscriptionManagement';
 import UserProfile from './components/UserAccount/UserProfile';
 import AccountSettings from './components/UserAccount/AccountSettings';
 
